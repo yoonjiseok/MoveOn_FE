@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_running"
+        android:icon="@drawable/ic_running"
+        android:title="러닝" />
+    <item
+        android:id="@+id/nav_challenge"
+        android:icon="@drawable/ic_challenge"
+        android:title="챌린지" />
+    <item
+        android:id="@+id/nav_ranking"
+        android:icon="@drawable/ic_ranking"
+        android:title="랭킹" />
+    <item
+        android:id="@+id/nav_mypage"
+        android:icon="@drawable/ic_mypage"
+        android:title="마이페이지" />
+</menu>
