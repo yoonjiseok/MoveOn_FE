@@ -12,6 +12,15 @@ class MyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_my, container, false)
+        val view = inflater.inflate(R.layout.fragment_my, container, false)
+
+        val activityRecordSection : View = view.findViewById(R.id.activityRecordSectoin)
+        activityRecordSection.setOnClickListener{
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, ActivityRecordFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+        return view
     }
 }

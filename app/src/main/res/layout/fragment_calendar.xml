@@ -1,14 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CalendarFragment">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Header Section for Month Navigation -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/prevMonth"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_left_button_calendar"
+            android:contentDescription="Previous Month" />
+
+        <TextView
+            android:id="@+id/currentMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2024년 12월"
+            android:textSize="20sp"
+            android:layout_marginHorizontal="70dp"
+            android:textColor="#4A5660"
+            android:fontFamily="@font/roboto_regular"/>
+
+        <ImageView
+            android:id="@+id/nextMonth"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/ic_right_button_calendar"
+            android:contentDescription="Next Month" />
+    </LinearLayout>
+
+    <!-- Days of the Week -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="SUN"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="MON"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <!-- Repeat for TUE, WED, THU, FRI, SAT -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="TUE"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="WED"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="THU"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="FRI"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="SAT"
+            android:textColor="#818682"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Calendar RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendarRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:clipToPadding="false"/>
+</LinearLayout>
