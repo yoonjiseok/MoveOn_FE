@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <!-- 주간 칸 수 제목 -->
+    <TextView
+        android:id="@+id/tvWeekCountTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이번 주 칸 수"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp"
+        android:textColor="#000000" />
+
+    <!-- 날짜 범위 -->
+    <TextView
+        android:id="@+id/tvWeekRange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2024.12.01~07"
+        android:layout_marginBottom="16dp"
+        android:textSize="14sp"
+        android:textColor="#666666" />
+
+    <!-- 바 차트 -->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+</LinearLayout>
