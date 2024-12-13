@@ -41,6 +41,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
 
+    implementation("com.sothree.slidinguppanel:library:3.4.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -50,3 +51,4 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
+
