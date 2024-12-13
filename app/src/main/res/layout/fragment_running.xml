@@ -4,9 +4,11 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- 지도 영역 -->
-    <FrameLayout
-        android:id="@+id/fragment_container"
+
+    <!-- Google Maps Fragment (가장 하단에 위치) -->
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
