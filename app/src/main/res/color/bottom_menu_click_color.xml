@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- 클릭된 상태 (완전 검정색) -->
+    <!-- 클릭된 상태 (초록색) -->
     <item
         android:color="#398342"
         android:state_checked="true" />

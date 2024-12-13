@@ -30,6 +30,7 @@
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#000000"
+            android:layout_margin="10dp"
             android:layout_marginBottom="4dp" />
 
         <!-- 현재 나의 영역 -->
@@ -42,15 +43,25 @@
             android:textColor="#000000" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/locationIcon"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:src="@drawable/ic_location"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_above="@id/startButton"
+        android:contentDescription="시작하기 아이콘" />
+
     <!-- 시작하기 버튼 -->
     <Button
         android:id="@+id/startButton"
         android:layout_width="327dp"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:text="시작하기"
         android:textSize="16sp"
-        android:backgroundTint="#398342"
         android:textColor="#FFFFFF"
+        android:background="@drawable/rounded_corner_main"
         android:layout_margin="16dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true" />
