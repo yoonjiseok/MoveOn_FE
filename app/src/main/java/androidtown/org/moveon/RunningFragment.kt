@@ -43,7 +43,7 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 버튼 초기화 및 클릭 이벤트 설정
+        // "시작하기" 버튼 초기화 및 클릭 이벤트 설정
         val startButton = view.findViewById<Button>(R.id.startButton)
         startButton?.setOnClickListener {
             // MainRecordFragment로 이동

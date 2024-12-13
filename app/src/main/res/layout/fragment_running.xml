@@ -2,15 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
-
-
-    <!-- Google Maps Fragment (가장 하단에 위치) -->
-    <fragment
-        android:id="@+id/map_fragment"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    android:background="#0000000000">
 
     <!-- 상단 제목 섹션 -->
     <LinearLayout
@@ -21,6 +13,7 @@
         android:padding="16dp"
         android:layout_alignParentTop="true"
         android:gravity="center_horizontal"
+        android:background="#00000000"
         android:elevation="4dp">
 
         <!-- 오늘 기록 -->
@@ -45,6 +38,16 @@
             android:textColor="#000000" />
     </LinearLayout>
 
+    <!-- Google Maps Fragment -->
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/header_section"
+        android:layout_above="@id/startButton" />
+
+    <!-- 위치 아이콘 -->
     <ImageView
         android:id="@+id/locationIcon"
         android:layout_width="33dp"
