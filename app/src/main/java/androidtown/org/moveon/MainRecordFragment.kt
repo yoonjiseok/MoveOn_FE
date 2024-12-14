@@ -1,15 +1,27 @@
 package androidtown.org.moveon
 
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
 
-class MainRecordFragment : Fragment(R.layout.fragment_main_record) {
+class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCallback {
 
     private var isTimerRunning = false
     private var timeInSeconds = 0
@@ -19,6 +31,14 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record) {
     private lateinit var playButton: ImageView
     private lateinit var pauseButton: ImageView
     private lateinit var stopButton: ImageView
+
+    private lateinit var mMap: GoogleMap
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val sharedMapViewModel: SharedMapViewModel by activityViewModels()
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,32 +55,91 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record) {
 
         handler = Handler(Looper.getMainLooper())
 
-        // Play button click listener
+        // FusedLocationProviderClient 초기화
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+
+        // 지도 프래그먼트 설정
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
+        // 타이머 버튼 이벤트
         playButton.setOnClickListener {
             startTimer()
-            playButton.visibility = View.GONE // Hide play button
-            pauseButton.visibility = View.VISIBLE // Show pause button
-            stopButton.visibility = View.VISIBLE // Show stop button
+            playButton.visibility = View.GONE
+            pauseButton.visibility = View.VISIBLE
+            stopButton.visibility = View.VISIBLE
         }
 
-        // Pause button click listener
         pauseButton.setOnClickListener {
             pauseTimer()
-            pauseButton.visibility = View.GONE // Hide pause button
-            playButton.visibility = View.VISIBLE // Show play button
+            pauseButton.visibility = View.GONE
+            playButton.visibility = View.VISIBLE
         }
 
-        // Stop button click listener
         stopButton.setOnClickListener {
-            val finalTime = timeInSeconds // Capture the final timer value
+            val finalTime = timeInSeconds
             stopTimer()
-            pauseButton.visibility = View.GONE // Hide pause button
-            playButton.visibility = View.VISIBLE // Show play button
-            stopButton.visibility = View.GONE // Hide stop button
+            pauseButton.visibility = View.GONE
+            playButton.visibility = View.VISIBLE
+            stopButton.visibility = View.GONE
 
-            // Navigate to RecordRunningActivity with the final time
             navigateToRecordRunningActivity(finalTime)
         }
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        // ViewModel에 저장된 지도 상태를 반영
+        sharedMapViewModel.cameraPosition.observe(viewLifecycleOwner) { position ->
+            val (latLng, zoom) = position
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+        }
+
+        // 위치 권한 확인 및 현재 위치 활성화
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            enableMyLocation()
+        } else {
+            requestLocationPermission()
+        }
+
+        // 지도 UI 설정
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+
+        // 카메라 이동 이벤트 리스너 추가
+        mMap.setOnCameraIdleListener {
+            val cameraPosition = mMap.cameraPosition
+            sharedMapViewModel.updateCameraPosition(cameraPosition.target, cameraPosition.zoom)
+        }
+    }
+
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            mMap.isMyLocationEnabled = true
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val currentLatLng = LatLng(it.latitude, it.longitude)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
+                }
+            }
+        }
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun startTimer() {
@@ -78,7 +157,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record) {
     private fun stopTimer() {
         isTimerRunning = false
         handler.removeCallbacks(timerRunnable)
-        updateTimerText() // Ensure final time is displayed
+        updateTimerText()
     }
 
     private val timerRunnable = object : Runnable {
@@ -101,7 +180,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record) {
     private fun navigateToRecordRunningActivity(finalTime: Int) {
         try {
             val intent = Intent(requireContext(), RecordRunningActivity::class.java)
-            intent.putExtra("RUNNING_TIME", finalTime) // Pass the timer time
+            intent.putExtra("RUNNING_TIME", finalTime)
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()

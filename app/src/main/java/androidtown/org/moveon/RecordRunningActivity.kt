@@ -1,6 +1,7 @@
 package androidtown.org.moveon
 
 import android.os.Bundle
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -16,6 +17,11 @@ class RecordRunningActivity : AppCompatActivity() {
         // Find and update the "달린 시간" TextView
         val timeValueText: TextView = findViewById(R.id.timeValue)
         timeValueText.text = formatTime(runningTimeInSeconds)
+
+        val backButton: ImageView = findViewById(R.id.back_button)
+        backButton.setOnClickListener {
+            onBackPressed() // Handle back navigation
+        }
     }
 
     private fun formatTime(seconds: Int): String {
