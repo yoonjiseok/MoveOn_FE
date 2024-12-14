@@ -10,15 +10,20 @@ import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 
 class RunningFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val sharedMapViewModel: SharedMapViewModel by activityViewModels()
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -30,11 +35,9 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_running, container, false)
 
-        // 지도 프래그먼트 초기화
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // 현재 위치 클라이언트 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return view
@@ -43,10 +46,9 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // "시작하기" 버튼 초기화 및 클릭 이벤트 설정
         val startButton = view.findViewById<Button>(R.id.startButton)
         startButton?.setOnClickListener {
-            // MainRecordFragment로 이동
+            moveToCurrentLocation()
             parentFragmentManager.beginTransaction()
                 .replace(R.id.fragment_container, MainRecordFragment())
                 .addToBackStack(null)
@@ -56,10 +58,32 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        mMap.uiSettings.isMyLocationButtonEnabled = true
 
-        // 퍼미션 확인 및 현재 위치로 이동
+        // ViewModel에서 저장된 상태 반영
+        sharedMapViewModel.cameraPosition.observe(viewLifecycleOwner) { position ->
+            val (latLng, zoom) = position
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
+        }
+
+        // 위치 권한 확인 및 현재 위치 활성화
         if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            enableMyLocation()
+        } else {
+            requestLocationPermission()
+        }
+
+        mMap.setOnCameraIdleListener {
+            val cameraPosition = mMap.cameraPosition
+            sharedMapViewModel.updateCameraPosition(cameraPosition.target, cameraPosition.zoom)
+        }
+    }
+
+    private fun enableMyLocation() {
+        if (ActivityCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
@@ -68,15 +92,33 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
                     val currentLatLng = LatLng(it.latitude, it.longitude)
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
+                }
+            }
+        }
+    }
+
+    private fun moveToCurrentLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    val currentLatLng = LatLng(it.latitude, it.longitude)
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
                 }
             }
-        } else {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
         }
+    }
+
+    private fun requestLocationPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+            LOCATION_PERMISSION_REQUEST_CODE
+        )
     }
 }

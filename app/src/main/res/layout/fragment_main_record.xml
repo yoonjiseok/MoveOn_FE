@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="bottom"
     app:umanoDragView="@+id/dragView"
-    app:umanoPanelHeight="90dp"
+    app:umanoPanelHeight="100dp"
     app:umanoOverlay="true"
     app:umanoFadeColor="@android:color/transparent"
     app:umanoShadowHeight="0dp"
@@ -16,6 +16,13 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <!-- 지도 영역 -->
+        <fragment
+            android:id="@+id/map_fragment"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <!-- 상단 제목 섹션 -->
         <LinearLayout
@@ -49,37 +56,21 @@
                     android:layout_width="33dp"
                     android:layout_height="33dp"
                     android:src="@drawable/ic_setting"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="5dp"
                     android:contentDescription="설정 아이콘" />
-
-                <ImageView
-                    android:id="@+id/location_icon"
-                    android:layout_width="33dp"
-                    android:layout_height="33dp"
-                    android:src="@drawable/ic_location"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="5dp"
-                    android:contentDescription="위치 아이콘" />
 
                 <ImageView
                     android:id="@+id/save_icon"
                     android:layout_width="33dp"
                     android:layout_height="33dp"
                     android:src="@drawable/ic_box"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="13dp"
                     android:layout_marginBottom="5dp"
                     android:contentDescription="보물상자 아이콘" />
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 지도 영역 -->
-        <FrameLayout
-            android:id="@+id/map_section"
-            android:layout_width="match_parent"
-            android:layout_height="719dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="16dp" />
     </RelativeLayout>
 
     <!-- Sliding Panel -->
