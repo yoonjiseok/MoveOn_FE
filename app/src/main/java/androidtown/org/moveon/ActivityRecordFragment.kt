@@ -27,7 +27,7 @@ class ActivityRecordFragment : Fragment() {
 
         // Weekly Stats Fragment 추가
         childFragmentManager.commit {
-            replace(R.id.weekly_states_fragment_container, WeeklyStatsFragment())
+            replace(R.id.weekly_states_fragment_container, WeeklyStatesFragment())
         }
     }
 }
