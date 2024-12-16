@@ -142,10 +142,10 @@
                         android:textColor="#535252" />
 
                     <TextView
-                        android:id="@+id/distance"
+                        android:id="@+id/distance_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="50m"
+                        android:text="50.2m"
                         android:textSize="22sp"
                         android:textStyle="bold"
                         android:textColor="#000000" />
@@ -166,7 +166,7 @@
                         android:textColor="#535252" />
 
                     <TextView
-                        android:id="@+id/steps"
+                        android:id="@+id/step_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="10,000"
