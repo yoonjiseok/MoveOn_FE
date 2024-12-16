@@ -2,6 +2,10 @@ package androidtown.org.moveon
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Handler
@@ -21,19 +25,27 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 
-class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCallback {
+class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCallback, SensorEventListener {
 
     private var isTimerRunning = false
+    private var isDistanceTracking = false
     private var timeInSeconds = 0
+    private var totalDistance = 0f
+    private var totalSteps = 0 // 걸음 수
+    private lateinit var lastLocation: Location
     private lateinit var handler: Handler
 
     private lateinit var timeValueText: TextView
+    private lateinit var distanceValueText: TextView
+    private lateinit var stepValueText: TextView
     private lateinit var playButton: ImageView
     private lateinit var pauseButton: ImageView
     private lateinit var stopButton: ImageView
 
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var sensorManager: SensorManager
+    private var stepSensor: Sensor? = null
     private val sharedMapViewModel: SharedMapViewModel by activityViewModels()
 
     companion object {
@@ -43,13 +55,14 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize views
+        // 뷰 초기화
         timeValueText = view.findViewById(R.id.timeValue)
+        distanceValueText = view.findViewById(R.id.distance_value)
+        stepValueText = view.findViewById(R.id.step_count)
         playButton = view.findViewById(R.id.play_button)
         pauseButton = view.findViewById(R.id.pause_button)
         stopButton = view.findViewById(R.id.stop_button)
 
-        // Initialize button visibility
         pauseButton.visibility = View.GONE
         stopButton.visibility = View.GONE
 
@@ -58,13 +71,19 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        // 지도 프래그먼트 설정
+        // 센서 매니저 초기화
+        sensorManager = requireContext().getSystemService(SensorManager::class.java)
+        stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
+
+        // 지도 설정
         val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        // 타이머 버튼 이벤트
+        // 버튼 클릭 이벤트
         playButton.setOnClickListener {
             startTimer()
+            startDistanceTracking()
+            startStepCounting()
             playButton.visibility = View.GONE
             pauseButton.visibility = View.VISIBLE
             stopButton.visibility = View.VISIBLE
@@ -72,31 +91,47 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
         pauseButton.setOnClickListener {
             pauseTimer()
+            pauseDistanceTracking()
+            pauseStepCounting()
             pauseButton.visibility = View.GONE
             playButton.visibility = View.VISIBLE
         }
 
         stopButton.setOnClickListener {
             val finalTime = timeInSeconds
+            val finalDistance = totalDistance
+            val finalSteps = totalSteps
             stopTimer()
+            stopDistanceTracking()
+            stopStepCounting()
             pauseButton.visibility = View.GONE
             playButton.visibility = View.VISIBLE
             stopButton.visibility = View.GONE
 
-            navigateToRecordRunningActivity(finalTime)
+            navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        stepSensor?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager.unregisterListener(this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // ViewModel에 저장된 지도 상태를 반영
         sharedMapViewModel.cameraPosition.observe(viewLifecycleOwner) { position ->
             val (latLng, zoom) = position
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom))
         }
 
-        // 위치 권한 확인 및 현재 위치 활성화
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -107,15 +142,17 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             requestLocationPermission()
         }
 
-        // 지도 UI 설정
         mMap.uiSettings.isMyLocationButtonEnabled = true
+    }
 
-        // 카메라 이동 이벤트 리스너 추가
-        mMap.setOnCameraIdleListener {
-            val cameraPosition = mMap.cameraPosition
-            sharedMapViewModel.updateCameraPosition(cameraPosition.target, cameraPosition.zoom)
+    override fun onSensorChanged(event: SensorEvent) {
+        if (isTimerRunning && event.sensor.type == Sensor.TYPE_STEP_DETECTOR) {
+            totalSteps++
+            stepValueText.text = "$totalSteps"
         }
     }
+
+    override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {}
 
     private fun enableMyLocation() {
         if (ActivityCompat.checkSelfPermission(
@@ -126,6 +163,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             mMap.isMyLocationEnabled = true
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
+                    lastLocation = it
                     val currentLatLng = LatLng(it.latitude, it.longitude)
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
                     sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
@@ -160,6 +198,67 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         updateTimerText()
     }
 
+    private fun startDistanceTracking() {
+        isDistanceTracking = true
+        val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
+            com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+            2000
+        ).apply {
+            setMinUpdateIntervalMillis(1000)
+        }.build()
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                object : com.google.android.gms.location.LocationCallback() {
+                    override fun onLocationResult(result: com.google.android.gms.location.LocationResult) {
+                        val newLocation = result.lastLocation
+                        if (newLocation != null && ::lastLocation.isInitialized && isDistanceTracking) {
+                            if (newLocation.accuracy <= 10) {
+                                val distance = lastLocation.distanceTo(newLocation)
+                                if (distance > 5) {
+                                    totalDistance += distance
+                                    distanceValueText.text = String.format("%.2f m", totalDistance)
+                                    lastLocation = newLocation
+                                }
+                            }
+                        } else if (newLocation != null) {
+                            lastLocation = newLocation
+                        }
+                    }
+                },
+                Looper.getMainLooper()
+            )
+        }
+    }
+
+    private fun pauseDistanceTracking() {
+        isDistanceTracking = false
+    }
+
+    private fun stopDistanceTracking() {
+        isDistanceTracking = false
+        fusedLocationClient.removeLocationUpdates(object : com.google.android.gms.location.LocationCallback() {})
+    }
+
+    private fun startStepCounting() {
+        stepSensor?.let {
+            sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+    }
+
+    private fun pauseStepCounting() {
+        sensorManager.unregisterListener(this, stepSensor)
+    }
+
+    private fun stopStepCounting() {
+        sensorManager.unregisterListener(this, stepSensor)
+    }
+
     private val timerRunnable = object : Runnable {
         override fun run() {
             if (isTimerRunning) {
@@ -177,13 +276,11 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         timeValueText.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
-    private fun navigateToRecordRunningActivity(finalTime: Int) {
-        try {
-            val intent = Intent(requireContext(), RecordRunningActivity::class.java)
-            intent.putExtra("RUNNING_TIME", finalTime)
-            startActivity(intent)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+    private fun navigateToRecordRunningActivity(finalTime: Int, finalDistance: Float, finalSteps: Int) {
+        val intent = Intent(requireContext(), RecordRunningActivity::class.java)
+        intent.putExtra("RUNNING_TIME", finalTime)
+        intent.putExtra("TOTAL_DISTANCE", finalDistance)
+        intent.putExtra("TOTAL_STEPS", finalSteps)
+        startActivity(intent)
     }
 }
