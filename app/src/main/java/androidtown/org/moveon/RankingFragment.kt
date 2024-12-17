@@ -38,4 +38,3 @@ class RankingFragment : Fragment() {
         }.attach()
     }
 }
-

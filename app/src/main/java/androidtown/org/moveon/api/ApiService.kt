@@ -1,4 +1,4 @@
-package androidtown.org.moveon.api
+/*package androidtown.org.moveon.api
 
 import retrofit2.Call
 import retrofit2.http.Body
@@ -27,3 +27,4 @@ interface ApiService {
     fun sendStepData(@Body stepRequest: StepRequest): Call<StepResponse>
 }
 
+*/

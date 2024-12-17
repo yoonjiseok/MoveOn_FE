@@ -9,15 +9,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
-import androidtown.org.moveon.api.RetrofitClient
-import androidtown.org.moveon.api.StepRequest
-import androidtown.org.moveon.api.StepResponse
 import androidx.fragment.app.Fragment
 import java.text.SimpleDateFormat
 import java.util.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+
 
 
 class WeeklyRankingFragment : Fragment() {
