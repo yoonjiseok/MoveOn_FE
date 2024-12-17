@@ -40,6 +40,8 @@ dependencies {
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
     implementation ("com.google.android.gms:play-services-location:21.0.1")
 
+    //url 저장
+    implementation ("com.github.bumptech.glide:glide:4.15.1")
 
     implementation("com.sothree.slidinguppanel:library:3.4.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
