@@ -1,5 +1,6 @@
 package androidtown.org.moveon
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
@@ -10,8 +11,10 @@ import android.location.Location
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -52,7 +55,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
 
     private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
-
+    private lateinit var refreshIcon: ImageView
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
@@ -72,6 +75,10 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         pauseButton.visibility = View.GONE
         stopButton.visibility = View.GONE
 
+        refreshIcon = view.findViewById(R.id.refresh_icon)
+        refreshIcon.setOnClickListener{
+            showFilterPopup()
+        }
         handler = Handler(Looper.getMainLooper())
 
         // FusedLocationProviderClient 초기화
@@ -366,5 +373,46 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                 Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+    private fun showFilterPopup() {
+        val inflater = LayoutInflater.from(requireContext())
+        val popupView = inflater.inflate(R.layout.popup_filter, null)
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(popupView)
+            .setCancelable(true) // 외부 터치 시 팝업 닫기
+            .create()
+        val personalRecordButton: LinearLayout = popupView.findViewById(R.id.personal_record)
+        val friendViewButton: LinearLayout = popupView.findViewById(R.id.friend_view)
+
+        var personalRecordBackground = R.drawable.personal_record_selector
+        var friendViewBackground = R.drawable.friend_view_selector
+        // 클릭 이벤트: 배경 조건에 따라 교환
+        personalRecordButton.setOnClickListener {
+            if (personalRecordBackground == R.drawable.friend_view_selector) {
+                // 배경 교환
+                personalRecordButton.setBackgroundResource(friendViewBackground)
+                friendViewButton.setBackgroundResource(personalRecordBackground)
+
+                // 리소스 교체
+                val temp = personalRecordBackground
+                personalRecordBackground = friendViewBackground
+                friendViewBackground = temp
+            }
+        }
+
+        friendViewButton.setOnClickListener {
+            if (friendViewBackground == R.drawable.friend_view_selector) {
+                // 배경 교환
+                personalRecordButton.setBackgroundResource(friendViewBackground)
+                friendViewButton.setBackgroundResource(personalRecordBackground)
+
+                // 리소스 교체
+                val temp = personalRecordBackground
+                personalRecordBackground = friendViewBackground
+                friendViewBackground = temp
+            }
+        }
+        dialog.show()
     }
 }

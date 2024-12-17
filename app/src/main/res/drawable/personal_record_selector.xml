@@ -1,12 +1,20 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 터치 상태 -->
+<?xml version="1.0" encoding="utf-8"?>
 
-
-    <!-- 기본 상태 -->
-    <item>
-        <shape>
-            <solid android:color="#398342" /> <!-- 기본 색상 -->
-            <corners android:radius="16dp" />
-        </shape>
-    </item>
-</selector>
+<vector
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:aapt="http://schemas.android.com/aapt"
+android:width="100dp"
+android:height="100dp"
+android:viewportWidth="100"
+android:viewportHeight="100"
+    >
+<group>
+    <clip-path
+        android:pathData="M12 0H88C94.6274 0 100 5.37258 100 12V88C100 94.6274 94.6274 100 88 100H12C5.37258 100 0 94.6274 0 88V12C0 5.37258 5.37258 0 12 0Z"
+        />
+    <path
+        android:pathData="M0 0V100H100V0"
+        android:fillColor="#398342"
+        />
+</group>
+</vector>
