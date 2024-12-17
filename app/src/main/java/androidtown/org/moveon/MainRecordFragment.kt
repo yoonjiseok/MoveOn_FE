@@ -13,21 +13,15 @@ import android.os.Looper
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.Priority
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
+import androidtown.org.moveon.map.GridManager
+import androidx.fragment.app.activityViewModels
 
 class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCallback, SensorEventListener {
 
@@ -51,6 +45,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var sensorManager: SensorManager
     private var stepSensor: Sensor? = null
     private val sharedMapViewModel: SharedMapViewModel by activityViewModels()
+    private lateinit var gridManager: GridManager
+    private lateinit var locationCallback: LocationCallback
 
     private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
 
@@ -76,7 +72,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
         // FusedLocationProviderClient 초기화
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-
+        gridManager = GridManager(gridSize = 0.00045)
         // 센서 매니저 초기화
         sensorManager = requireContext().getSystemService(SensorManager::class.java)
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
@@ -89,6 +85,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         // 버튼 클릭 이벤트
         playButton.setOnClickListener {
             startTimer()
+            startLocationUpdates()
             startDistanceTracking()
             startStepCounting()
             playButton.visibility = View.GONE
@@ -98,6 +95,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
         pauseButton.setOnClickListener {
             pauseTimer()
+            stopLocationUpdates()
             pauseDistanceTracking()
             pauseStepCounting()
             pauseButton.visibility = View.GONE
@@ -109,6 +107,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             val finalDistance = totalDistance
             val finalSteps = totalSteps
             stopTimer()
+            stopLocationUpdates()
             stopDistanceTracking()
             stopStepCounting()
             pauseButton.visibility = View.GONE
@@ -185,6 +184,38 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
             LOCATION_PERMISSION_REQUEST_CODE
         )
+    }
+
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
+            .setMinUpdateIntervalMillis(2000).build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(result: LocationResult) {
+                for (location in result.locations) {
+                    val userLocation = LatLng(location.latitude, location.longitude)
+                    gridManager.markGridAsVisited(mMap, userLocation)
+                }
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                locationCallback,
+                Looper.getMainLooper()
+            )
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        if (::locationCallback.isInitialized) {
+            fusedLocationClient.removeLocationUpdates(locationCallback)
+        }
     }
 
     private fun startTimer() {
@@ -308,5 +339,20 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             putExtra("MAP_IMAGE_URL", staticMapUrl) // URL 전달
         }
         startActivity(intent)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableMyLocation()
+            } else {
+                Toast.makeText(requireContext(), "위치 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
