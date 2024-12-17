@@ -247,6 +247,12 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         timeValueText.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
+    //칼로리 계산
+    private fun calculateCalories(distanceInMeters: Float, weightKg: Float = 60f): Int {
+        val distanceKm = distanceInMeters / 1000
+        return (distanceKm * weightKg * 1.036f).toInt()
+    }
+
     private fun startDistanceTracking() {
         isDistanceTracking = true
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).build()
@@ -293,10 +299,12 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         finalSteps: Int
     ) {
         val staticMapUrl = generateStaticMapUrl() // Static Map URL 생성
+        val caloriesBurned = calculateCalories(finalDistance)//칼로리 계산
         val intent = Intent(requireContext(), RecordRunningActivity::class.java).apply {
             putExtra("RUNNING_TIME", finalTime)
             putExtra("TOTAL_DISTANCE", finalDistance)
             putExtra("TOTAL_STEPS", finalSteps)
+            putExtra("CALORIES_BURNED", caloriesBurned)
             putExtra("MAP_IMAGE_URL", staticMapUrl) // URL 전달
         }
         startActivity(intent)
