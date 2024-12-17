@@ -190,8 +190,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     }
 
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
-            .setMinUpdateIntervalMillis(500).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+            .setMinUpdateIntervalMillis(1000).build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
@@ -292,7 +292,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
     private fun startDistanceTracking() {
         isDistanceTracking = true
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -306,7 +306,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                             val latLng = LatLng(newLocation.latitude, newLocation.longitude)
                             if (::lastLocation.isInitialized && isDistanceTracking) {
                                 val distance = lastLocation.distanceTo(newLocation)
-                                if (distance in 2f..100f) {
+                                if (distance > 0.5) {
                                     totalDistance += distance
                                     distanceValueText.text = String.format("%.2f m", totalDistance)
                                 }
