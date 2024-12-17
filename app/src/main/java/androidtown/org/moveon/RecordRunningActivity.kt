@@ -3,7 +3,9 @@ package androidtown.org.moveon
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidtown.org.moveon.R
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 
 class RecordRunningActivity : AppCompatActivity() {
 
@@ -15,6 +17,7 @@ class RecordRunningActivity : AppCompatActivity() {
         val runningTimeInSeconds = intent.getIntExtra("RUNNING_TIME", 0)
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val totalSteps = intent.getIntExtra("TOTAL_STEPS", 0)
+        val mapImageUrl = intent.getStringExtra("MAP_IMAGE_URL") // 지도 URL 받기
 
         // Find and update the "달린 시간" TextView
         val timeValueText: TextView = findViewById(R.id.timeValue)
@@ -27,6 +30,14 @@ class RecordRunningActivity : AppCompatActivity() {
         // Find and update the "걸음 수" TextView
         val stepValueText: TextView = findViewById(R.id.step_count)
         stepValueText.text = formatSteps(totalSteps)
+
+        // Load the map image using Glide
+        val mapView: ImageView = findViewById(R.id.map_view)
+        if (mapImageUrl != null) {
+            Glide.with(this)
+                .load(mapImageUrl)
+                .into(mapView)
+        }
 
         // Handle back navigation
         val backButton: ImageView = findViewById(R.id.back_button)

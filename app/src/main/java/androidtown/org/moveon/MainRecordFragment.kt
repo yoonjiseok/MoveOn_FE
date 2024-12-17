@@ -18,7 +18,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -48,6 +52,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private var stepSensor: Sensor? = null
     private val sharedMapViewModel: SharedMapViewModel by activityViewModels()
 
+    private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
+
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
@@ -76,7 +82,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
 
         // 지도 설정
-        val mapFragment = childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         // 버튼 클릭 이벤트
@@ -198,43 +205,6 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         updateTimerText()
     }
 
-    private fun startDistanceTracking() {
-        isDistanceTracking = true
-        val locationRequest = com.google.android.gms.location.LocationRequest.Builder(
-            com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
-            2000
-        ).apply {
-            setMinUpdateIntervalMillis(1000)
-        }.build()
-
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                object : com.google.android.gms.location.LocationCallback() {
-                    override fun onLocationResult(result: com.google.android.gms.location.LocationResult) {
-                        val newLocation = result.lastLocation
-                        if (newLocation != null && ::lastLocation.isInitialized && isDistanceTracking) {
-                            if (newLocation.accuracy <= 10) {
-                                val distance = lastLocation.distanceTo(newLocation)
-                                if (distance > 5) {
-                                    totalDistance += distance
-                                    distanceValueText.text = String.format("%.2f m", totalDistance)
-                                    lastLocation = newLocation
-                                }
-                            }
-                        } else if (newLocation != null) {
-                            lastLocation = newLocation
-                        }
-                    }
-                },
-                Looper.getMainLooper()
-            )
-        }
-    }
 
     private fun pauseDistanceTracking() {
         isDistanceTracking = false
@@ -242,7 +212,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
     private fun stopDistanceTracking() {
         isDistanceTracking = false
-        fusedLocationClient.removeLocationUpdates(object : com.google.android.gms.location.LocationCallback() {})
+        fusedLocationClient.removeLocationUpdates(object :
+            com.google.android.gms.location.LocationCallback() {})
     }
 
     private fun startStepCounting() {
@@ -276,11 +247,58 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         timeValueText.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
-    private fun navigateToRecordRunningActivity(finalTime: Int, finalDistance: Float, finalSteps: Int) {
-        val intent = Intent(requireContext(), RecordRunningActivity::class.java)
-        intent.putExtra("RUNNING_TIME", finalTime)
-        intent.putExtra("TOTAL_DISTANCE", finalDistance)
-        intent.putExtra("TOTAL_STEPS", finalSteps)
+    private fun startDistanceTracking() {
+        isDistanceTracking = true
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).build()
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            fusedLocationClient.requestLocationUpdates(
+                locationRequest,
+                object : LocationCallback() {
+                    override fun onLocationResult(locationResult: LocationResult) {
+                        locationResult.lastLocation?.let { newLocation ->
+                            val latLng = LatLng(newLocation.latitude, newLocation.longitude)
+                            if (::lastLocation.isInitialized && isDistanceTracking) {
+                                val distance = lastLocation.distanceTo(newLocation)
+                                if (distance > 5) {
+                                    totalDistance += distance
+                                    distanceValueText.text = String.format("%.2f m", totalDistance)
+                                }
+                            }
+                            pathPoints.add(latLng) // 경로 추가
+                            lastLocation = newLocation
+                        }
+                    }
+                },
+                Looper.getMainLooper()
+            )
+        }
+    }
+
+
+    private fun generateStaticMapUrl(): String {
+        val apiKey = "AIzaSyCLYJJKmvriJ5WvzKNfqGvizryUda8FZJY" // Google Maps API 키
+        val path = pathPoints.joinToString("|") { "${it.latitude},${it.longitude}" }
+        val size = "600x300" // 이미지 사이즈
+        return "https://maps.googleapis.com/maps/api/staticmap?size=$size&path=color:0x0000ff|weight:5|$path&key=$apiKey"
+    }
+
+
+    private fun navigateToRecordRunningActivity(
+        finalTime: Int,
+        finalDistance: Float,
+        finalSteps: Int
+    ) {
+        val staticMapUrl = generateStaticMapUrl() // Static Map URL 생성
+        val intent = Intent(requireContext(), RecordRunningActivity::class.java).apply {
+            putExtra("RUNNING_TIME", finalTime)
+            putExtra("TOTAL_DISTANCE", finalDistance)
+            putExtra("TOTAL_STEPS", finalSteps)
+            putExtra("MAP_IMAGE_URL", staticMapUrl) // URL 전달
+        }
         startActivity(intent)
     }
 }
