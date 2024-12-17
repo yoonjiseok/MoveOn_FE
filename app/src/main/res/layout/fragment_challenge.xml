@@ -43,7 +43,7 @@
             android:layout_height="207dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="#398342"
+            android:background="@drawable/challenge_background_green"
             android:layout_marginEnd="8dp">
 
             <ImageView
@@ -67,7 +67,7 @@
             android:layout_height="207dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:background="#818682"
+            android:background="@drawable/challenge_background_gray"
             android:layout_marginStart="8dp">
 
             <ImageView
