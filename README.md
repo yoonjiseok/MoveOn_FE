@@ -8,3 +8,8 @@
 <img width="200" src="https://github.com/user-attachments/assets/342125ef-d118-475f-bb83-e4c4297a9931">
 <img width="200" src="https://github.com/user-attachments/assets/a10d4419-aa9f-40c5-8d1d-72f9913f9a9a">
 <img width="200" src="https://github.com/user-attachments/assets/d82ab964-9c34-4c9f-a7e8-daa2dcb3241b">
+
+### Team
+|<img src="https://avatars.githubusercontent.com/u/75469131?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/9919?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/18133?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|
+|JeonSeungwoo<br/>[@seondal](https://github.com/seondal)|YoonJiseokb<br/>[@github](https://github.com/github)|LeeSeojung<br/>[@git](https://github.com/git)||JeonKyunghoon<br/>[@git](https://github.com/git)|
