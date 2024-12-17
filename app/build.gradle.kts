@@ -43,6 +43,7 @@ dependencies {
     //url 저장
     implementation ("com.github.bumptech.glide:glide:4.15.1")
 
+
     implementation("com.sothree.slidinguppanel:library:3.4.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
     implementation(libs.androidx.core.ktx)
