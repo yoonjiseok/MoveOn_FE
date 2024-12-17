@@ -34,6 +34,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var handler: Handler
 
     private lateinit var timeValueText: TextView
+    private lateinit var currentGridCountText: TextView
     private lateinit var distanceValueText: TextView
     private lateinit var stepValueText: TextView
     private lateinit var playButton: ImageView
@@ -48,6 +49,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var gridManager: GridManager
     private lateinit var locationCallback: LocationCallback
 
+
     private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
 
     companion object {
@@ -61,6 +63,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         timeValueText = view.findViewById(R.id.timeValue)
         distanceValueText = view.findViewById(R.id.distance_value)
         stepValueText = view.findViewById(R.id.step_count)
+        currentGridCountText = view.findViewById(R.id.currentGridCountText)
         playButton = view.findViewById(R.id.play_button)
         pauseButton = view.findViewById(R.id.pause_button)
         stopButton = view.findViewById(R.id.stop_button)
@@ -195,6 +198,9 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                 for (location in result.locations) {
                     val userLocation = LatLng(location.latitude, location.longitude)
                     gridManager.markGridAsVisited(mMap, userLocation)
+
+                    val visitedCount = gridManager.getVisitedCount()
+                    currentGridCountText.text = visitedCount.toString()
                 }
             }
         }

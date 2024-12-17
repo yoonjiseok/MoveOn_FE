@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.PolygonOptions
 
 class GridManager(private val gridSize: Double) {
     private val visitedGrids = mutableMapOf<String, Polygon>()
+    private var visitedCount = 0
 
     /**
      * 사용자의 현재 위치에 따라 방문한 격자를 색칠
@@ -29,10 +30,14 @@ class GridManager(private val gridSize: Double) {
                     LatLng(gridLat + gridSize, gridLng + gridSize),
                     LatLng(gridLat + gridSize, gridLng)
                 )
-                .strokeColor(0xFF00FF00.toInt()) // 테두리 색 (초록색)
+                .strokeColor(0xFF3F89FF.toInt()) // 테두리 색 (초록색)
                 .strokeWidth(2f) // 선 두께
-                .fillColor(0x5500FF00.toInt()) // 내부 색 (반투명 초록색)
+                .fillColor(0x553F89FF.toInt()) // 내부 색 (반투명 초록색)
         )
         visitedGrids[gridKey] = gridPolygon
+        visitedCount++
+    }
+    fun getVisitedCount(): Int {
+        return visitedCount
     }
 }
