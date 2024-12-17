@@ -29,6 +29,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private var isDistanceTracking = false
     private var timeInSeconds = 0
     private var totalDistance = 0f
+    private var totalPixel = 0
     private var totalSteps = 0 // 걸음 수
     private lateinit var lastLocation: Location
     private lateinit var handler: Handler
@@ -109,6 +110,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             val finalTime = timeInSeconds
             val finalDistance = totalDistance
             val finalSteps = totalSteps
+            val finalPixel = totalPixel
             stopTimer()
             stopLocationUpdates()
             stopDistanceTracking()
@@ -117,7 +119,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             playButton.visibility = View.VISIBLE
             stopButton.visibility = View.GONE
 
-            navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps)
+            navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps, finalPixel)
         }
     }
 
@@ -200,7 +202,9 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                     gridManager.markGridAsVisited(mMap, userLocation)
 
                     val visitedCount = gridManager.getVisitedCount()
-                    currentGridCountText.text = visitedCount.toString()
+                    totalPixel = visitedCount
+                    currentGridCountText.text = totalPixel.toString()
+
                 }
             }
         }
@@ -333,13 +337,15 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private fun navigateToRecordRunningActivity(
         finalTime: Int,
         finalDistance: Float,
-        finalSteps: Int
+        finalSteps: Int,
+        finalPixel: Int
     ) {
         val staticMapUrl = generateStaticMapUrl() // Static Map URL 생성
         val caloriesBurned = calculateCalories(finalDistance)//칼로리 계산
         val intent = Intent(requireContext(), RecordRunningActivity::class.java).apply {
             putExtra("RUNNING_TIME", finalTime)
             putExtra("TOTAL_DISTANCE", finalDistance)
+            putExtra("TOTAL_PIXEL", finalPixel)
             putExtra("TOTAL_STEPS", finalSteps)
             putExtra("CALORIES_BURNED", caloriesBurned)
             putExtra("MAP_IMAGE_URL", staticMapUrl) // URL 전달
