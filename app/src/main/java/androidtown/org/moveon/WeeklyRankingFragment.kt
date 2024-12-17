@@ -1,18 +1,28 @@
 package androidtown.org.moveon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
+import androidtown.org.moveon.api.RetrofitClient
+import androidtown.org.moveon.api.StepRequest
+import androidtown.org.moveon.api.StepResponse
 import androidx.fragment.app.Fragment
 import java.text.SimpleDateFormat
 import java.util.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class WeeklyRankingFragment : Fragment() {
     private lateinit var weekSpinner: Spinner
+    private lateinit var myScoreTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +36,7 @@ class WeeklyRankingFragment : Fragment() {
 
         // Spinner 초기화
         weekSpinner = view.findViewById(R.id.weekSpinner)
+        myScoreTextView = view.findViewById(R.id.myScoreTextView)
 
         // Spinner 데이터 설정
         setupWeekSpinner()
@@ -71,7 +82,6 @@ class WeeklyRankingFragment : Fragment() {
                 id: Long
             ) {
                 val selectedRange = weeks[position]
-                fetchRankingDataForWeek(selectedRange)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -80,8 +90,5 @@ class WeeklyRankingFragment : Fragment() {
         }
     }
 
-    private fun fetchRankingDataForWeek(selectedRange: String) {
-        // 선택된 주에 대한 데이터를 서버로부터 가져오는 로직 구현
-        // 예: 서버 API 호출 또는 로컬 데이터 처리
-    }
+
 }

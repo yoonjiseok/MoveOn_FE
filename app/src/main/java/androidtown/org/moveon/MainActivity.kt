@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-
+import androidtown.org.moveon.map.MapFragment
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -13,11 +13,11 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 
-        // Set default fragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, RunningFragment())
-            .commit()
-
+        if (savedInstanceState == null) { // 중복 추가 방지
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, RunningFragment()) // MapFragment를 기본 Fragment로 설정
+                .commit()
+        }
         // Set listener for navigation item selection
         bottomNavigationView.setOnItemSelectedListener { menuItem ->
             var selectedFragment: Fragment? = null

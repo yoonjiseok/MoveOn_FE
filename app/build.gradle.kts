@@ -58,5 +58,13 @@ dependencies {
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("androidx.recyclerview:recyclerview:1.3.1")
     implementation("com.google.android.material:material:1.9.0")
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-gson
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.google.code.gson:gson:2.8.6")
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
 }
 
