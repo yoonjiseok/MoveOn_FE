@@ -17,6 +17,7 @@ class RecordRunningActivity : AppCompatActivity() {
         val runningTimeInSeconds = intent.getIntExtra("RUNNING_TIME", 0)
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val totalSteps = intent.getIntExtra("TOTAL_STEPS", 0)
+        val totalPixel = intent.getIntExtra("TOTAL_PIXEL", 0)
         val mapImageUrl = intent.getStringExtra("MAP_IMAGE_URL") // 지도 URL 받기
         val caloriesBurned: Int = intent.getIntExtra("CALORIES_BURNED", 0)
 
@@ -36,7 +37,9 @@ class RecordRunningActivity : AppCompatActivity() {
         val caloriesValueText: TextView = findViewById(R.id.calories)
         caloriesValueText.text = formatCalories(caloriesBurned)
 
-
+        // Find and update the "현재 칸의 수" TextView
+        val currentPixelText: TextView = findViewById(R.id.today_count_number)
+        currentPixelText.text = formatSteps(totalPixel)
 
         // Load the map image using Glide
         val mapView: ImageView = findViewById(R.id.map_view)

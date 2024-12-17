@@ -12,7 +12,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -30,11 +29,11 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private var isDistanceTracking = false
     private var timeInSeconds = 0
     private var totalDistance = 0f
+    private var totalPixel = 0
     private var totalSteps = 0 // 걸음 수
     private lateinit var lastLocation: Location
     private lateinit var handler: Handler
 
-    //timer
     private lateinit var timeValueText: TextView
     private lateinit var currentGridCountText: TextView
     private lateinit var distanceValueText: TextView
@@ -43,7 +42,6 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var pauseButton: ImageView
     private lateinit var stopButton: ImageView
 
-    //distance
     private lateinit var mMap: GoogleMap
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var sensorManager: SensorManager
@@ -52,11 +50,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var gridManager: GridManager
     private lateinit var locationCallback: LocationCallback
 
-    //url
-    private val pathPoints = mutableListOf<LatLng>()
 
-
-    var isFilterVisible = false
+    private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
 
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
@@ -76,28 +71,6 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
         pauseButton.visibility = View.GONE
         stopButton.visibility = View.GONE
-
-        // 지도 필터 뷰 초기화
-        val mapFilterSection = view.findViewById<LinearLayout>(R.id.map_filter_section)
-        val dragView = view.findViewById<LinearLayout>(R.id.dragView)
-        val settingIcon = view.findViewById<ImageView>(R.id.setting_icon)
-
-        mapFilterSection.visibility = View.GONE // 초기에는 숨김 상태
-
-        // 필터 버튼 동작
-        settingIcon.setOnClickListener {
-            if (isFilterVisible) {
-                // 필터를 숨기고 dragView를 보임
-                mapFilterSection.visibility = View.GONE
-                dragView.visibility = View.VISIBLE
-                isFilterVisible = false
-            } else {
-                // dragView를 숨기고 필터를 보임
-                mapFilterSection.visibility = View.VISIBLE
-                dragView.visibility = View.GONE
-                isFilterVisible = true
-            }
-        }
 
         handler = Handler(Looper.getMainLooper())
 
@@ -137,6 +110,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             val finalTime = timeInSeconds
             val finalDistance = totalDistance
             val finalSteps = totalSteps
+            val finalPixel = totalPixel
             stopTimer()
             stopLocationUpdates()
             stopDistanceTracking()
@@ -145,7 +119,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
             playButton.visibility = View.VISIBLE
             stopButton.visibility = View.GONE
 
-            navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps)
+            navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps, finalPixel)
         }
     }
 
@@ -228,7 +202,9 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                     gridManager.markGridAsVisited(mMap, userLocation)
 
                     val visitedCount = gridManager.getVisitedCount()
-                    currentGridCountText.text = visitedCount.toString()
+                    totalPixel = visitedCount
+                    currentGridCountText.text = totalPixel.toString()
+
                 }
             }
         }
@@ -361,13 +337,15 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private fun navigateToRecordRunningActivity(
         finalTime: Int,
         finalDistance: Float,
-        finalSteps: Int
+        finalSteps: Int,
+        finalPixel: Int
     ) {
         val staticMapUrl = generateStaticMapUrl() // Static Map URL 생성
         val caloriesBurned = calculateCalories(finalDistance)//칼로리 계산
         val intent = Intent(requireContext(), RecordRunningActivity::class.java).apply {
             putExtra("RUNNING_TIME", finalTime)
             putExtra("TOTAL_DISTANCE", finalDistance)
+            putExtra("TOTAL_PIXEL", finalPixel)
             putExtra("TOTAL_STEPS", finalSteps)
             putExtra("CALORIES_BURNED", caloriesBurned)
             putExtra("MAP_IMAGE_URL", staticMapUrl) // URL 전달
