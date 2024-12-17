@@ -2,6 +2,15 @@
 
 "Move On" is a GPS-based running app that visualizes users' running paths on a map in the form of pixels. It combines this visualization with various game elements such as land conquest competitions, mini marathons, and treasure hunt events, as well as a reward system.
 
+## Development environment
+- Java Version: 1.8
+- Kotlin JVM Target: 1.8
+## Execution environment
+- Compile SDK: Android 15 (API 35)
+- Min SDK: Android 7.0 (API 24)
+- Target SDK : Android 14 (API 34)
+
+
 ## Screenshots
 
 <img width="200" src="https://github.com/user-attachments/assets/ae578c81-fb6c-41aa-9ab9-2750890fb911">
