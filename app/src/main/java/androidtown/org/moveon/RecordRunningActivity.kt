@@ -13,11 +13,12 @@ class RecordRunningActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record_running)
 
-        // Get the timer time, distance, and steps from the Intent
+        // Get the timer time, distance, steps, and calories from the Intent
         val runningTimeInSeconds = intent.getIntExtra("RUNNING_TIME", 0)
         val totalDistance = intent.getFloatExtra("TOTAL_DISTANCE", 0f)
         val totalSteps = intent.getIntExtra("TOTAL_STEPS", 0)
         val mapImageUrl = intent.getStringExtra("MAP_IMAGE_URL") // 지도 URL 받기
+        val caloriesBurned: Int = intent.getIntExtra("CALORIES_BURNED", 0)
 
         // Find and update the "달린 시간" TextView
         val timeValueText: TextView = findViewById(R.id.timeValue)
@@ -30,6 +31,12 @@ class RecordRunningActivity : AppCompatActivity() {
         // Find and update the "걸음 수" TextView
         val stepValueText: TextView = findViewById(R.id.step_count)
         stepValueText.text = formatSteps(totalSteps)
+
+        // Find and update the "칼로리 소모량" TextView
+        val caloriesValueText: TextView = findViewById(R.id.calories)
+        caloriesValueText.text = formatCalories(caloriesBurned)
+
+
 
         // Load the map image using Glide
         val mapView: ImageView = findViewById(R.id.map_view)
@@ -60,4 +67,9 @@ class RecordRunningActivity : AppCompatActivity() {
     private fun formatSteps(steps: Int): String {
         return "$steps" // Format steps as a simple string
     }
+
+    private fun formatCalories(calories: Int): String {
+        return "$calories kcal"
+    }
+
 }
