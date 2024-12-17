@@ -10,6 +10,6 @@
 <img width="200" src="https://github.com/user-attachments/assets/d82ab964-9c34-4c9f-a7e8-daa2dcb3241b">
 
 ### Team
-|<img src="https://avatars.githubusercontent.com/u/75469131?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/9919?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/18133?v=4" width="150" height="150"/>|
-|:-:|:-:|:-:|
-|JeonSeungwoo<br/>[@seondal](https://github.com/seondal)|YoonJiseokb<br/>[@github](https://github.com/github)|LeeSeojung<br/>[@git](https://github.com/git)||JeonKyunghoon<br/>[@git](https://github.com/git)|
+|<img src="https://avatars.githubusercontent.com/u/149984505?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/33974157?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/112802701?v=4" width="150" height="150"/>|<img src="https://avatars.githubusercontent.com/u/44134072?v=4" width="150" height="150"/>|
+|:-:|:-:|:-:|:-:|
+|JeonSeungwoo<br/>[@Jeonseungwoo1](https://github.com/Jeonseungwoo1)|YoonJiseok<br/>[@yoonjiseok](https://github.com/yoonjiseok)|LeeSeojeong<br/>[@Lseojeong](https://github.com/Lseojeong)|JeonKyunghoon<br/>[@MacBuki](https://github.com/MacBuki)|
