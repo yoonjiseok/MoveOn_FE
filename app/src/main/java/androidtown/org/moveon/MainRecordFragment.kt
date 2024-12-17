@@ -34,6 +34,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var handler: Handler
 
     private lateinit var timeValueText: TextView
+    private lateinit var currentGridCountText: TextView
     private lateinit var distanceValueText: TextView
     private lateinit var stepValueText: TextView
     private lateinit var playButton: ImageView
@@ -48,6 +49,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     private lateinit var gridManager: GridManager
     private lateinit var locationCallback: LocationCallback
 
+
     private val pathPoints = mutableListOf<LatLng>() // 경로 데이터를 저장
 
     companion object {
@@ -61,6 +63,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         timeValueText = view.findViewById(R.id.timeValue)
         distanceValueText = view.findViewById(R.id.distance_value)
         stepValueText = view.findViewById(R.id.step_count)
+        currentGridCountText = view.findViewById(R.id.currentGridCountText)
         playButton = view.findViewById(R.id.play_button)
         pauseButton = view.findViewById(R.id.pause_button)
         stopButton = view.findViewById(R.id.stop_button)
@@ -171,8 +174,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                 location?.let {
                     lastLocation = it
                     val currentLatLng = LatLng(it.latitude, it.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
-                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 17f)
                 }
             }
         }
@@ -187,14 +190,17 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     }
 
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
-            .setMinUpdateIntervalMillis(2000).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
+            .setMinUpdateIntervalMillis(500).build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 for (location in result.locations) {
                     val userLocation = LatLng(location.latitude, location.longitude)
                     gridManager.markGridAsVisited(mMap, userLocation)
+
+                    val visitedCount = gridManager.getVisitedCount()
+                    currentGridCountText.text = visitedCount.toString()
                 }
             }
         }
@@ -286,7 +292,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
     private fun startDistanceTracking() {
         isDistanceTracking = true
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500).build()
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -300,7 +306,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                             val latLng = LatLng(newLocation.latitude, newLocation.longitude)
                             if (::lastLocation.isInitialized && isDistanceTracking) {
                                 val distance = lastLocation.distanceTo(newLocation)
-                                if (distance > 5) {
+                                if (distance in 2f..100f) {
                                     totalDistance += distance
                                     distanceValueText.text = String.format("%.2f m", totalDistance)
                                 }
