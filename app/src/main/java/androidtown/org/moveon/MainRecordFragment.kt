@@ -174,8 +174,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                 location?.let {
                     lastLocation = it
                     val currentLatLng = LatLng(it.latitude, it.longitude)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
-                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 17f)
                 }
             }
         }
@@ -190,8 +190,8 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
     }
 
     private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000)
-            .setMinUpdateIntervalMillis(2000).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500)
+            .setMinUpdateIntervalMillis(500).build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
@@ -292,7 +292,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
     private fun startDistanceTracking() {
         isDistanceTracking = true
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 2000).build()
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 500).build()
 
         if (ActivityCompat.checkSelfPermission(
                 requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -306,7 +306,7 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
                             val latLng = LatLng(newLocation.latitude, newLocation.longitude)
                             if (::lastLocation.isInitialized && isDistanceTracking) {
                                 val distance = lastLocation.distanceTo(newLocation)
-                                if (distance > 5) {
+                                if (distance in 2f..100f) {
                                     totalDistance += distance
                                     distanceValueText.text = String.format("%.2f m", totalDistance)
                                 }
