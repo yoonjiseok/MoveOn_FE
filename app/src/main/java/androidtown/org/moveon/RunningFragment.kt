@@ -107,8 +107,8 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
                     val currentLatLng = LatLng(it.latitude, it.longitude)
-                    sharedMapViewModel.updateCameraPosition(currentLatLng, 15f)
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f))
+                    sharedMapViewModel.updateCameraPosition(currentLatLng, 17f)
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 17f))
                 }
             }
         }

@@ -30,7 +30,7 @@ class WeeklyRankingFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RankingListAdapter
     private val rankingService = RetrofitClient.instance.create(RankingService::class.java)
-    val currentUserId = 1
+    val currentUserId = 2
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
