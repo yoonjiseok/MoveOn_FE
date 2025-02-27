@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- TabLayout -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:layout_marginTop="15dp"
+        app:tabIndicatorColor="@android:color/black"
+        app:tabTextAppearance="@style/TabTextStyle"
+        app:tabIndicatorHeight="2dp"
+        app:tabSelectedTextColor="@android:color/black"
+        app:tabTextColor="@android:color/darker_gray" />
+
+    <!-- ViewPager2 -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.tabs.TabItem
+        android:id="@+id/tab_marathon_ranking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="챌린지" />
+
+    <com.google.android.material.tabs.TabItem
+        android:id="@+id/tab_weekly_ranking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="마라톤 랭킹" />
+
+</LinearLayout>
