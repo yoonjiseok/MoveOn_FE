@@ -44,8 +44,8 @@
             <!-- 이미지 (둥근 모서리 적용) -->
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="105dp"
+                android:layout_height="105dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/sample_image"
                 android:background="@drawable/rounded_image"
@@ -65,8 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="서울특별시 영등포구"
-                    android:textSize="14sp"
-                    android:textColor="#777" />
+                    android:textSize="15sp"
+                    android:textColor="#535252" />
 
                 <!-- 행사 제목 -->
                 <TextView
@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="여의도 한강 공원"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="#000"
                     android:layout_marginTop="4dp" />
@@ -85,8 +85,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="10km"
-                    android:textSize="14sp"
-                    android:textColor="#555"
+                    android:textSize="15sp"
+                    android:textColor="#535252"
                     android:layout_marginTop="4dp" />
 
                 <!-- 날짜 -->
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:text="2025. 01. 26 ~ 2025. 02. 01"
                     android:textSize="14sp"
-                    android:textColor="#555"
+                    android:textColor="#535252"
                     android:layout_marginTop="4dp" />
 
             </LinearLayout>
@@ -105,8 +105,8 @@
         <!-- 구분선 (카드 내부에 포함) -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC"
+            android:layout_height="2dp"
+            android:background="#F2F3F6"
             android:layout_marginTop="8dp"/>
 
     </LinearLayout>
