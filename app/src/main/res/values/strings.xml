@@ -2,4 +2,7 @@
     <string name="app_name">Moveon</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <!-- Google Maps API Keys -->
+    <string name="google_maps_key">AIzaSyCLYJJKmvriJ5WvzKNfqGvizryUda8FZJY</string>
 </resources>
