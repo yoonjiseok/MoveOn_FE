@@ -59,7 +59,7 @@ class CountdownFragment : Fragment() {
                         parentFragmentManager.beginTransaction()
                             .replace(R.id.fragment_container, MainRecordFragment())
                             .commit()
-                    }, 200)
+                    }, 300)
                 }
             }
 

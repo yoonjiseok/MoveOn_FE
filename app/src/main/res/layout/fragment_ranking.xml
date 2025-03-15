@@ -1,39 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#FFFFFF"
+    tools:context=".RankingFragment">
 
-    <!-- TabLayout -->
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        android:layout_marginTop="15dp"
-        app:tabIndicatorColor="@android:color/black"
-        app:tabTextAppearance="@style/TabTextStyle"
-        app:tabIndicatorHeight="2dp"
-        app:tabSelectedTextColor="@android:color/black"
-        app:tabTextColor="@android:color/darker_gray" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <!-- ViewPager2 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <!-- 페이지 제목 -->
+        <TextView
+            android:id="@+id/pageTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="16dp"
+            android:text="주간 랭킹"
+            android:textColor="#000000"
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
-    <com.google.android.material.tabs.TabItem
-        android:id="@+id/tab_marathon_ranking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="마라톤 랭킹" />
+        <!-- 날짜 선택 및 내 랭킹 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <com.google.android.material.tabs.TabItem
-        android:id="@+id/tab_weekly_ranking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="주간 랭킹" />
+            <!-- 날짜 선택 -->
+            <Spinner
+                android:id="@+id/weekSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:spinnerMode="dropdown"
+                android:layout_marginStart="8dp" />
 
-</LinearLayout>
+            <!-- 내 랭킹 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/myrank_background"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                android:layout_marginTop="8dp">
+
+                <!-- 내 순위 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:id="@+id/myRankTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="나의 순위"
+                        android:textSize="14sp"
+                        android:textColor="#398342"/>
+                    <TextView
+                        android:id="@+id/myRankNumberTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="1"
+                        android:textSize="35sp"
+                        android:textColor="#398342"/>
+                </LinearLayout>
+
+                <!-- 프로필 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/myProfileImageView"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_profile"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Me"
+                        android:textSize="20sp"
+                        android:textColor="#000000"/>
+                </LinearLayout>
+
+                <!-- 내 점수 -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="땅의 수"
+                        android:textSize="16sp"
+                        android:textColor="#398342"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/myScoreTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="3"
+                            android:textSize="25sp"
+                            android:textStyle="bold"
+                            android:textColor="#398342"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="4dp"
+                            android:text="칸"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="#80000000"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 랭킹 리스트 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rankingRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="16dp" />
+
+    </LinearLayout>
+</ScrollView>

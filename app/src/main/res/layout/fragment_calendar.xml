@@ -17,8 +17,8 @@
 
         <ImageView
             android:id="@+id/prevMonth"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_left_button_calendar"
             android:contentDescription="Previous Month" />
 
@@ -34,8 +34,8 @@
 
         <ImageView
             android:id="@+id/nextMonth"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_right_button_calendar"
             android:contentDescription="Next Month" />
     </LinearLayout>

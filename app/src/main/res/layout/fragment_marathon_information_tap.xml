@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@android:color/white"
         android:layout_marginTop="15dp"
-        app:tabIndicatorColor="@android:color/black"
+        app:tabIndicatorColor="#398342"
         app:tabTextAppearance="@style/TabTextStyle"
         app:tabIndicatorHeight="2dp"
         app:tabSelectedTextColor="@android:color/black"
