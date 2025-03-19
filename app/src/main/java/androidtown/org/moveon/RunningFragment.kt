@@ -50,7 +50,7 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
         startButton?.setOnClickListener {
             moveToCurrentLocation()
             parentFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, MainRecordFragment())
+                .replace(R.id.fragment_container, CountdownFragment())
                 .addToBackStack(null)
                 .commit()
         }
