@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.animation.doOnEnd
 import androidx.fragment.app.Fragment
 
 class CountdownFragment : Fragment() {
@@ -31,63 +32,43 @@ class CountdownFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         countdownText = view.findViewById(R.id.countdownText)
         circleProgress = view.findViewById(R.id.circleProgress)
         startCountdown()
     }
 
     private fun startCountdown() {
-        // 전체 카운트다운 시간 (3초 + GO! 1초)
-        val totalDuration = 4000L
-        val animationDuration = 800L // 애니메이션 시간
-        
-        countDownTimer = object : CountDownTimer(totalDuration, 1000) {
-            var previousNumber = 3
+        val totalDuration = 3500L  // 3초 + "GO!" 0.5초
+        val animationDuration = 1000L // 1초 동안 프로그레스바 채우기
 
+        countDownTimer = object : CountDownTimer(totalDuration, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val secondsRemaining = (millisUntilFinished / 1000).toInt()
-                
+
                 if (secondsRemaining > 0) {
                     countdownText.text = secondsRemaining.toString()
-                    
-                    // 이전 애니메이터 취소
-                    if (::progressAnimator.isInitialized) {
-                        progressAnimator.cancel()
-                    }
-
-                    when {
-                        // 3에서 2로 전환
-                        previousNumber == 3 && secondsRemaining == 2 -> {
-                            animateProgress(0, 50, animationDuration) // 9시에서 3시까지
-                        }
-                        // 2에서 1로 전환
-                        previousNumber == 2 && secondsRemaining == 1 -> {
-                            animateProgress(50, 100, animationDuration) // 3시에서 한바퀴 완성
-                        }
-                        // 처음 시작할 때 (3 표시)
-                        secondsRemaining == 3 -> {
-                            circleProgress.progress = 0 // 9시 위치에서 시작
-                        }
-                    }
-                    
-                    previousNumber = secondsRemaining
+                    animateProgress(0, 110, animationDuration)
                 } else {
+                    // "GO!" 상태에서는 애니메이션 없이 100% 유지
                     countdownText.text = "GO!"
+                    circleProgress.progress = 100  // 원이 유지되도록 설정
+
+                    // "GO!"가 0.3초 동안 유지된 후 화면 전환
+                    handler.postDelayed({
+                        parentFragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, MainRecordFragment())
+                            .commit()
+                    }, 300)
                 }
             }
 
             override fun onFinish() {
-                // Navigate to MainRecordFragment
-                parentFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, MainRecordFragment())
-                    .commit()
+                // "GO!" 후 0.2초 동안 유지되므로 별도 처리 X
             }
         }
 
-        // 카운트다운 시작
         countDownTimer.start()
-        // 초기 프로그레스 설정
         circleProgress.progress = 0
     }
 
@@ -100,16 +81,5 @@ class CountdownFragment : Fragment() {
             }
             start()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        if (::countDownTimer.isInitialized) {
-            countDownTimer.cancel()
-        }
-        if (::progressAnimator.isInitialized) {
-            progressAnimator.cancel()
-        }
-        handler.removeCallbacksAndMessages(null)
     }
 }

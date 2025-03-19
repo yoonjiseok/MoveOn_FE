@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Background Circle with padding for symmetry -->
-    <item android:left="4dp" android:right="4dp" android:top="4dp" android:bottom="4dp">
+    <item android:right="4dp" android:top="4dp" android:bottom="4dp">
         <shape android:shape="ring"
-            android:innerRadius="98dp"
+            android:innerRadius="100dp"
             android:thickness="60dp"
             android:useLevel="false">
-            <solid android:color="#CECECE"/>
+            <solid android:color="#C4C4C4"/>
         </shape>
     </item>
-    
+
     <!-- Progress Circle with matching padding -->
-    <item android:left="4dp" android:right="4dp" android:top="4dp" android:bottom="4dp">
+    <item android:right="4dp" android:top="4dp" android:bottom="4dp">
         <shape android:shape="ring"
-            android:innerRadius="98dp"
+            android:innerRadius="100dp"
             android:thickness="60dp"
             android:useLevel="true">
             <solid android:color="#398342"/>

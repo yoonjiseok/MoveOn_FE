@@ -160,7 +160,12 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
 
             navigateToRecordRunningActivity(finalTime, finalDistance, finalSteps, finalPixel)
         }
+        view.post {
+            playButton.performClick() // 자동으로 Play 버튼 클릭!
+        }
     }
+
+
 
     override fun onResume() {
         super.onResume()

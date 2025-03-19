@@ -6,12 +6,21 @@ import android.widget.TextView
 import androidtown.org.moveon.R
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RecordRunningActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_record_running)
+
+        // ✅ 오늘 날짜 가져오기
+        val todayDate = getTodayDate()
+
+        // ✅ 오늘 날짜를 표시할 TextView 찾기
+        val recordDateText: TextView = findViewById(R.id.record_date)
+        recordDateText.text = todayDate // "3월 15일의 기록" 형태로 표시
 
         // Get the timer time, distance, steps, and calories from the Intent
         val runningTimeInSeconds = intent.getIntExtra("RUNNING_TIME", 0)
@@ -56,6 +65,13 @@ class RecordRunningActivity : AppCompatActivity() {
         }
     }
 
+    // ✅ 오늘 날짜를 가져오는 함수
+    private fun getTodayDate(): String {
+        val today = Calendar.getInstance().time
+        val dateFormat = SimpleDateFormat("M월 d일의 기록", Locale.KOREAN)
+        return dateFormat.format(today)
+    }
+
     private fun formatTime(seconds: Int): String {
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
@@ -74,5 +90,4 @@ class RecordRunningActivity : AppCompatActivity() {
     private fun formatCalories(calories: Int): String {
         return "$calories kcal"
     }
-
 }
