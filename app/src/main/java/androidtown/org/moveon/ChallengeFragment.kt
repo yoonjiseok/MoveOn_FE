@@ -28,6 +28,19 @@ class ChallengeFragment : Fragment() {
         val btnGame2 = view.findViewById<LinearLayout>(R.id.btnGame2) // 미니 마라톤 버튼
         val btnComplete = view.findViewById<TextView>(R.id.btnComplete) // 완료 버튼
 
+        // 처음에는 버튼들을 회색으로 설정
+        btnGame.setBackgroundResource(R.drawable.challenge_background_gray)
+        btnGame2.setBackgroundResource(R.drawable.challenge_background_gray)
+        btnComplete.setBackgroundResource(R.drawable.challenge_background_gray)
+
+        fun updateSelection() {
+            if (selectedChallenge != null) {
+                btnComplete.setBackgroundResource(R.drawable.challenge_background_green) // 선택 버튼 초록색
+            } else {
+                btnComplete.setBackgroundResource(R.drawable.challenge_background_gray) // 선택 버튼 회색
+            }
+        }
+
         btnGame.setOnClickListener {
             if (selectedChallenge != "game") {
                 btnGame.setBackgroundResource(R.drawable.challenge_background_green) // 땅따먹기 → 초록색
@@ -37,6 +50,7 @@ class ChallengeFragment : Fragment() {
                 btnGame.setBackgroundResource(R.drawable.challenge_background_gray) // 땅따먹기 → 회색
                 selectedChallenge = null
             }
+            updateSelection()
         }
 
         btnGame2.setOnClickListener {
@@ -48,9 +62,13 @@ class ChallengeFragment : Fragment() {
                 btnGame2.setBackgroundResource(R.drawable.challenge_background_gray) // 미니 마라톤 → 회색
                 selectedChallenge = null
             }
+            updateSelection()
         }
 
         btnComplete.setOnClickListener {
+            if (selectedChallenge != null) {
+                btnComplete.setBackgroundResource(R.drawable.challenge_background_green) // 선택 버튼 초록색 유지
+            }
             if (selectedChallenge == "marathon") {
                 // 완료 버튼 클릭 시 `MarathonBoardFragment`로 이동
                 parentFragmentManager.beginTransaction()
