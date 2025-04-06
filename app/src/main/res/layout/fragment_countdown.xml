@@ -28,7 +28,7 @@
             android:textSize="72sp"
             android:textStyle="bold"
             android:textColor="#000000"
-            android:text="3" />
+            android:text="1" />
 
     </FrameLayout>
     <LinearLayout
