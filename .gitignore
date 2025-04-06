@@ -19,3 +19,4 @@ local.properties
 gradle/libs.versions.toml
 gradle/wrapper/gradle-wrapper.properties
 .idea/gradle.xml
+.idea/misc.xml

@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/warningImage"
+        android:layout_width="192dp"
+        android:layout_height="189dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/ic_character" />
 
     <TextView
         android:id="@+id/dialogTitle"
@@ -12,33 +21,42 @@
         android:text="혹시 자동차나 자전거를 타고 계시나요?"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:fontFamily="@font/roboto_bold"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        />
 
     <TextView
         android:id="@+id/dialogMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="속도가 너무 빠르면 기록이 일시정지 됩니다.\n&quot;Move on&quot;은 러닝 앱으로\n걷거나 뛰어야 기록이 됩니다."
+        android:text="속도가 너무 빠르면 기록이 일시정지 됩니다.\n\n&quot;Move on&quot;은 러닝 앱으로\n걷거나 뛰어야 기록이 됩니다."
         android:textSize="16sp"
-        android:layout_marginBottom="24dp"/>
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="end">
-
-        <Button
-            android:id="@+id/continueButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="계속하기"
-            android:layout_marginEnd="8dp"/>
+        android:gravity="center">
 
         <Button
             android:id="@+id/stopButton"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="기록끝내기"/>
+            android:text="기록끝내기"
+            android:backgroundTint="#818682"
+            android:layout_marginEnd="20dp"
+            style="@style/Widget.MaterialComponents.Button"/>
+        
+        <Button
+            android:id="@+id/continueButton"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="계속하기" />
+
+        
     </LinearLayout>
 </LinearLayout>
