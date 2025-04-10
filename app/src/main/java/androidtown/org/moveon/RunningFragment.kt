@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -45,6 +46,10 @@ class RunningFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.findViewById<ImageButton>(R.id.recommendButton)?.setOnClickListener {
+            RecommendedCourseDialog().show(parentFragmentManager, "recommendedCourse")
+        }
 
         val startButton = view.findViewById<Button>(R.id.startButton)
         startButton?.setOnClickListener {

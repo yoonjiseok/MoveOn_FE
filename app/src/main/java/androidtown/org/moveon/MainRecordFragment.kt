@@ -14,6 +14,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -95,6 +96,9 @@ class MainRecordFragment : Fragment(R.layout.fragment_main_record), OnMapReadyCa
         super.onViewCreated(view, savedInstanceState)
 
         // 뷰 초기화
+        view.findViewById<ImageButton>(R.id.recommendButton)?.setOnClickListener {
+            RecommendedCourseDialog().show(parentFragmentManager, "recommendedCourse")
+        }
         timeValueText = view.findViewById(R.id.timeValue)
         distanceValueText = view.findViewById(R.id.distance_value)
         stepValueText = view.findViewById(R.id.step_count)
